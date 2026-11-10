@@ -4,7 +4,7 @@ const BIZ = {
   ceo: "전현정",
   regNo: "192-22-02309",
   mailOrder: "신고 면제 (간이과세자)",
-  address: "비상주 사무실 주소 등록 후 게재 예정",   // ← 비상주 주소가 나오면 여기만 바꾸기
+  address: "대구광역시 동구 안심로73길 22, 103동 1906호 (신서동)",
   email: "2632224@naver.com",
 };
 document.querySelectorAll("[data-biz]").forEach(el => {
