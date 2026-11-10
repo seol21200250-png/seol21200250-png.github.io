@@ -26,3 +26,17 @@ a{color:var(--gold)} footer{margin-top:48px;font-size:.85rem;color:#8a86b8}
 .ymd input,.ymd select{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:12px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text)}
 .ymd select option{color:#111}
 .err{color:#ff9b8a;margin-top:10px;display:none}
+.biz{margin-top:28px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:.8rem;color:#8a86b8;line-height:1.8}
+.price{font-size:2.2rem;color:var(--gold);font-weight:800;margin:4px 0}
+.price small{font-size:.9rem;color:var(--sub);font-weight:400}
+ol.steps{padding-left:1.2em} ol.steps li{margin:6px 0}
+form .row{margin:14px 0}
+form label.t{display:block;font-weight:700;color:var(--text);margin-bottom:6px}
+form input[type=text],form input[type=email],form input[type=number],form select,form textarea{width:100%;box-sizing:border-box;font:inherit;font-size:1rem;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text)}
+form select option{color:#111}
+form textarea{min-height:110px;resize:vertical}
+.inline{display:flex;gap:8px;flex-wrap:wrap}.inline>*{flex:1 1 90px;min-width:0}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.92rem;margin:8px 0;color:var(--sub)}
+.btn{display:block;width:100%;font:inherit;font-weight:800;font-size:1.1rem;padding:16px;border:0;border-radius:14px;background:var(--gold);color:#1a1440;cursor:pointer;margin-top:12px;text-align:center;text-decoration:none}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.sample{background:rgba(245,199,107,.08);border-left:3px solid var(--gold);padding:12px 16px;border-radius:8px;color:var(--text)}

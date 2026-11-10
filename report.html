@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>夜化 사주풀이 리포트 · 야화</title>
+<meta name="description" content="내 사주와 지금의 고민에 맞춘 夜化 기본 사주풀이 리포트. 9,900원, 이메일 PDF 발송.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <span class="tag">夜化 · 하루의 답은, 밤에 있다</span>
+  <h1>夜化 사주풀이 리포트</h1>
+  <p>내 사주 원국과 지금 고민에 맞춘 <strong>질문 맞춤형 사주풀이</strong>를 PDF로 보내드려요.</p>
+
+  <div class="card">
+    <h2 style="margin-top:0">기본 사주풀이 (질문 맞춤)</h2>
+    <div class="price">9,900원 <small>부가세 포함</small></div>
+    <ul>
+      <li>사주 원국 · 오행 · 십신 · 대운 정리</li>
+      <li><strong>궁금한 점 1~2가지</strong>에 대한 결론과 근거 (취업·이직, 연애·재회·결혼, 사업·재물 등)</li>
+      <li>2026~2028년 흐름과 <strong>시기별 조언</strong> (필요 시 월 단위)</li>
+      <li>夜化의 최종 답 · A4 1~2쪽 PDF</li>
+    </ul>
+    <p class="small">결제 후 <strong>24시간 이내</strong> 입력하신 이메일로 발송됩니다. (보통 더 빨리 도착해요)</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">이렇게 풀어드려요</h2>
+    <p class="sample"><strong>핵심 결론</strong> | 결론부터 말씀드려요. 질문에 대한 답을 맨 앞에 두고, 왜 그렇게 보는지 사주 구조와 시기로 근거를 짚어요.</p>
+    <ol class="steps">
+      <li>만세력 계산: 절기 기준 원국, 12운성, 신살, 합·충·형, 대운·세운·월운</li>
+      <li>夜化의 풀이 기준에 맞춰 질문 맞춤 원고 작성 (AI가 작성을 돕고 夜化의 기준으로 검수합니다)</li>
+      <li>PDF로 정리해 이메일 발송</li>
+    </ol>
+  </div>
+
+  <div class="card" id="apply">
+    <h2 style="margin-top:0">신청하기</h2>
+    <form id="orderForm" onsubmit="return false">
+      <div class="row"><label class="t" for="nick">이름 또는 닉네임</label>
+        <input type="text" id="nick" maxlength="20" placeholder="리포트에 표시될 이름 (예: 꼬북)" required></div>
+      <div class="row"><label class="t">성별</label>
+        <div class="inline"><select id="gender" required><option value="">선택</option><option value="F">여성</option><option value="M">남성</option></select></div></div>
+      <div class="row"><label class="t">생년월일</label>
+        <div class="inline">
+          <select id="cal" required><option value="solar">양력</option><option value="lunar">음력</option><option value="leap">음력(윤달)</option></select>
+          <input type="number" id="by" min="1930" max="2030" placeholder="년" required>
+          <input type="number" id="bm" min="1" max="12" placeholder="월" required>
+          <input type="number" id="bd" min="1" max="31" placeholder="일" required>
+        </div></div>
+      <div class="row"><label class="t">태어난 시간</label>
+        <div class="inline">
+          <input type="number" id="hh" min="0" max="23" placeholder="시 (0~23)">
+          <input type="number" id="mi" min="0" max="59" placeholder="분">
+          <label class="check" style="flex:1 1 140px"><input type="checkbox" id="notime"> 시간 모름</label>
+        </div></div>
+      <div class="row"><label class="t" for="q">궁금한 점 (1~2가지)</label>
+        <textarea id="q" maxlength="400" placeholder="예) 내년에 이직해도 될까요? 지금 관세법인 3년차예요." required></textarea></div>
+      <div class="row"><label class="t" for="email">리포트 받을 이메일</label>
+        <input type="email" id="email" placeholder="example@naver.com" required></div>
+      <label class="check"><input type="checkbox" required> <span><a href="terms.html">이용약관</a>에 동의합니다. (필수)</span></label>
+      <label class="check"><input type="checkbox" required> <span><a href="privacy.html">개인정보 수집·이용 및 국외 이전</a>에 동의합니다. (필수)</span></label>
+      <label class="check"><input type="checkbox" required> <span>리포트는 맞춤 제작되는 디지털 콘텐츠로, <strong>발송 후에는 청약철회(환불)가 제한</strong>됨을 확인했습니다. (필수)</span></label>
+      <button class="btn" id="payBtn" disabled>결제 준비 중 · 곧 오픈합니다</button>
+      <p class="small" style="text-align:center">오픈 전 문의: 카카오톡 오픈채팅 ‘야화사주’</p>
+    </form>
+  </div>
+
+  <footer>
+    재미와 참고를 위한 명리학적 해석이며, 중요한 결정은 스스로의 판단으로 해주세요.
+    <div data-biz></div>
+  </footer>
+</main>
+<script src="biz.js"></script>
+<script>
+document.getElementById("notime").addEventListener("change", e => {
+  ["hh", "mi"].forEach(id => { const el = document.getElementById(id); el.disabled = e.target.checked; if (e.target.checked) el.value = ""; });
+});
+</script>
+</body>
+</html>
