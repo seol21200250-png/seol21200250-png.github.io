@@ -23,7 +23,7 @@
       <li>2026~2028년 흐름과 <strong>시기별 조언</strong> (필요 시 월 단위)</li>
       <li>오행으로 보는 개운법 · 夜化의 최종 답 · A4 1~2쪽 PDF</li>
     </ul>
-    <p class="small">결제 후 <strong>24시간 이내</strong> 입력하신 이메일로 발송됩니다. (보통 더 빨리 도착해요)</p>
+    <p class="small"><strong>계좌이체</strong>로 결제하고, 입금 확인 후 <strong>24시간 이내</strong> 입력하신 이메일로 발송됩니다.</p>
   </div>
 
   <div class="card">
@@ -68,9 +68,23 @@
       <label class="check"><input type="checkbox" required> <span><a href="terms.html">이용약관</a>에 동의합니다. (필수)</span></label>
       <label class="check"><input type="checkbox" required> <span><a href="privacy.html">개인정보 수집·이용 및 국외 이전</a>에 동의합니다. (필수)</span></label>
       <label class="check"><input type="checkbox" required> <span>리포트는 맞춤 제작되는 디지털 콘텐츠로, <strong>발송 후에는 청약철회(환불)가 제한</strong>됨을 확인했습니다. (필수)</span></label>
-      <button class="btn" id="payBtn" disabled>결제 준비 중 · 곧 오픈합니다</button>
-      <p class="small" style="text-align:center">오픈 전 문의: 카카오톡 오픈채팅 ‘야화사주’</p>
+      <button class="btn" id="orderBtn" type="submit">주문서 만들기</button>
+      <p class="err" id="formErr" style="text-align:center"></p>
     </form>
+    <div id="done" style="display:none">
+      <h2 style="margin-top:18px">✅ 주문서가 복사됐어요</h2>
+      <ol class="steps">
+        <li>아래 <strong>입금 계좌</strong>로 <strong>9,900원</strong>을 보내주세요.<br>
+          <span class="sample" style="display:block;margin-top:6px">카카오뱅크 <strong>3333-38-3553064</strong> · 예금주 <strong>전현정</strong><br>
+          입금자명은 <strong id="payName"></strong> 로 적어주세요.</span>
+          <button class="btn" type="button" id="copyAcc" style="margin-top:8px;font-size:.95rem;padding:10px">계좌번호 복사</button></li>
+        <li>카카오톡 오픈채팅 <strong>‘야화사주’</strong>에 들어가서 복사된 주문서를 <strong>붙여넣기</strong> 해주세요.
+          <a class="btn" href="https://open.kakao.com/o/s6bPNkGh" target="_blank" rel="noopener" style="margin-top:8px">오픈채팅 열기</a></li>
+        <li>입금이 확인되면 <strong>24시간 이내</strong> 입력하신 이메일로 리포트를 보내드려요.</li>
+      </ol>
+      <p class="small">주문서가 복사되지 않았다면 아래 내용을 길게 눌러 직접 복사해 주세요.</p>
+      <pre id="orderText" style="white-space:pre-wrap;background:rgba(255,255,255,.06);padding:12px;border-radius:10px;font-size:.9rem"></pre>
+    </div>
   </div>
 
   <footer>
@@ -78,11 +92,64 @@
     <div data-biz></div>
   </footer>
 </main>
+<script src="lunar.js"></script>
 <script src="biz.js"></script>
 <script>
 document.getElementById("q").addEventListener("input", e => {
   document.getElementById("qcount").textContent = `${e.target.value.length} / 120`;
 });
+const $ = id => document.getElementById(id);
+function fallbackCopy(text) {
+  const t = document.createElement("textarea");
+  t.value = text;
+  document.body.appendChild(t);
+  t.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  t.remove();
+}
+function copy(text) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  fallbackCopy(text);
+  return Promise.resolve();
+}
+function showErr(msg) { $("formErr").textContent = msg; $("formErr").style.display = "block"; }
+$("orderForm").addEventListener("submit", e => {
+  e.preventDefault();
+  $("formErr").style.display = "none";
+  if (!$("orderForm").reportValidity()) return;
+  const y = +$("by").value, m = +$("bm").value, d = +$("bd").value;
+  const cal = $("cal").value;
+  if (cal === "solar") {
+    const t = new Date(Date.UTC(y, m - 1, d));
+    if (t.getUTCMonth() !== m - 1) return showErr("양력에 없는 날짜예요. 다시 확인해 주세요.");
+  } else if (typeof lunarToSolar === "function" && !lunarToSolar(y, m, d, cal === "leap")) {
+    return showErr(cal === "leap" ? "그 해에는 해당 윤달이 없거나 그 날짜가 없어요." : "음력에 없는 날짜예요.");
+  }
+  const noTime = $("notime").checked || $("hh").value === "";
+  const time = noTime ? "모름" : `${String(+$("hh").value).padStart(2, "0")}:${String(+($("mi").value || 0)).padStart(2, "0")}`;
+  const now = new Date();
+  const id = `YH-${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const calTxt = cal === "solar" ? "양력" : cal === "leap" ? "음력(윤달)" : "음력";
+  const oneLine = v => v.trim().replace(/\s+/g, " ");
+  const text = [
+    "[夜化 사주풀이 주문]",
+    `주문번호: ${id}`,
+    `이름: ${oneLine($("nick").value)}`,
+    `성별: ${$("gender").value === "M" ? "남" : "여"}`,
+    `생년월일: ${calTxt} ${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+    `시간: ${time}`,
+    `질문: ${oneLine($("q").value)}`,
+    `상황: ${oneLine($("ctx").value) || "-"}`,
+    `이메일: ${$("email").value.trim()}`,
+  ].join("\n");
+  $("orderText").textContent = text;
+  $("payName").textContent = `${oneLine($("nick").value).slice(0, 5)}${id.slice(-4)}`;
+  copy(text);
+  $("done").style.display = "block";
+  $("orderBtn").textContent = "주문서 다시 복사";
+  $("done").scrollIntoView({ behavior: "smooth" });
+});
+$("copyAcc").addEventListener("click", () => { copy("3333383553064"); $("copyAcc").textContent = "복사됐어요 ✓"; });
 document.getElementById("notime").addEventListener("change", e => {
   ["hh", "mi"].forEach(id => { const el = document.getElementById(id); el.disabled = e.target.checked; if (e.target.checked) el.value = ""; });
 });
