@@ -14,14 +14,33 @@
   <p>내 사주 원국과 지금 고민에 맞춘 <strong>질문 맞춤형 사주풀이</strong>를 PDF로 보내드려요.</p>
 
   <div class="card">
-    <h2 style="margin-top:0">기본 사주풀이 (질문 맞춤)</h2>
+    <h2 style="margin-top:0">① 종합운</h2>
     <div class="price">9,900원 <small>부가세 포함</small></div>
     <ul>
-      <li>사주 원국 · 오행 · 십신 · 대운 정리</li>
-      <li><strong>가장 궁금한 질문 1가지</strong>에 대한 결론과 근거 (취업·이직, 연애·재회·결혼, 사업·재물 등)</li>
       <li>타고난 성향(일주), 지나온 시기와 지금 상황 읽기</li>
-      <li><strong>앞으로 12개월 월별 운</strong>과 5년 흐름, 10년 대운표</li>
-      <li>오행으로 보는 개운법 · 夜化의 최종 답 · <strong>A4 7~8쪽 PDF</strong></li>
+      <li>일과 돈, 연애·결혼, 궁금한 질문 1가지에 대한 결론</li>
+      <li>10년 대운표, <strong>앞으로 12개월 월별 운</strong>과 5년 흐름</li>
+      <li>오행 개운법 · 夜化의 최종 답 · <strong>A4 7~8쪽 PDF</strong></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">② 취업·이직운</h2>
+    <div class="price">9,900원 <small>부가세 포함</small></div>
+    <ul>
+      <li>일하는 성향, 잘 맞는 직무·조직</li>
+      <li>지나온 커리어 흐름, 지금 대운이 일에 주는 의미</li>
+      <li><strong>월별 지원·이직 타이밍</strong>, 면접·서류 전략</li>
+      <li>합격 개운법 · <strong>A4 7~8쪽 PDF</strong></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0">③ 궁합</h2>
+    <div class="price">9,900원 <small>부가세 포함</small></div>
+    <ul>
+      <li>두 사람 원국 비교, <strong>종합 궁합 점수</strong>와 항목별 점수</li>
+      <li>잘 맞는 부분 · 부딪히는 부분, 각자가 느끼는 상대</li>
+      <li>연애·결혼 흐름(2026~2028), 관계를 지키는 방법</li>
+      <li>夜化의 결론 · <strong>A4 7~8쪽 PDF</strong></li>
     </ul>
     <p class="small"><strong>계좌이체</strong>로 결제하고, 입금 확인 후 <strong>24시간 이내</strong> 입력하신 이메일로 발송됩니다.</p>
   </div>
@@ -39,6 +58,13 @@
   <div class="card" id="apply">
     <h2 style="margin-top:0">신청하기</h2>
     <form id="orderForm" onsubmit="return false">
+      <div class="row"><label class="t">상품 선택</label>
+        <div class="prod">
+          <label><input type="radio" name="prod" value="종합운" checked><span>① 종합운</span></label>
+          <label><input type="radio" name="prod" value="취업·이직운"><span>② 취업·이직운</span></label>
+          <label><input type="radio" name="prod" value="궁합"><span>③ 궁합</span></label>
+        </div></div>
+      <p class="small" id="me-title" style="display:none;margin:0"><strong>나의 정보</strong></p>
       <div class="row"><label class="t" for="nick">이름 또는 닉네임</label>
         <input type="text" id="nick" maxlength="20" placeholder="리포트에 표시될 이름 (예: 꼬북)" required></div>
       <div class="row"><label class="t">성별</label>
@@ -56,13 +82,32 @@
           <input type="number" id="mi" min="0" max="59" placeholder="분">
           <label class="check" style="flex:1 1 140px"><input type="checkbox" id="notime"> 시간 모름</label>
         </div></div>
+      <div id="partner" style="display:none" class="sample">
+        <p style="margin:0 0 6px"><strong>💞 상대방 정보</strong></p>
+        <div class="row"><label class="t" for="pnick">상대방 이름 또는 호칭</label>
+          <input type="text" id="pnick" maxlength="20" placeholder="예) 남자친구"></div>
+        <div class="row"><label class="t">상대방 성별</label>
+          <div class="inline"><select id="pgender"><option value="">선택</option><option value="F">여성</option><option value="M">남성</option></select></div></div>
+        <div class="row"><label class="t">상대방 생년월일</label>
+          <div class="inline">
+            <select id="pcal"><option value="solar">양력</option><option value="lunar">음력</option><option value="leap">음력(윤달)</option></select>
+            <input type="number" id="py" min="1930" max="2030" placeholder="년">
+            <input type="number" id="pm" min="1" max="12" placeholder="월">
+            <input type="number" id="pd" min="1" max="31" placeholder="일">
+          </div></div>
+        <div class="row"><label class="t">상대방 태어난 시간</label>
+          <div class="inline">
+            <input type="number" id="phh" min="0" max="23" placeholder="시 (0~23)">
+            <input type="number" id="pmi" min="0" max="59" placeholder="분">
+            <label class="check" style="flex:1 1 140px"><input type="checkbox" id="pnotime"> 시간 모름</label>
+          </div></div>
+      </div>
       <div class="row"><label class="t" for="q">가장 궁금한 질문 <strong>1가지</strong></label>
         <textarea id="q" maxlength="120" placeholder="예) 내년에 이직해도 될까요?" required style="min-height:70px"></textarea>
         <p class="small" id="qcount" style="text-align:right;margin:4px 0 0">0 / 120</p></div>
       <div class="row"><label class="t" for="ctx">지금 상황 (선택)</label>
         <textarea id="ctx" maxlength="300" placeholder="예) 관세법인 3년차, 사람 때문에 지쳐서 상반기 안에 옮기고 싶어요." style="min-height:90px"></textarea>
         <p class="small" style="margin:4px 0 0">상황을 적어주시면 풀이가 훨씬 구체적이에요. 질문이 여러 개라면 가장 중요한 하나를 깊게, 나머지는 짧게 답해드려요.</p></div>
-      <p class="sample" style="font-size:.9rem">💞 상대방 생년월일까지 함께 보고 싶다면 <strong>궁합 풀이</strong>로 안내해 드려요. 카카오톡 오픈채팅 ‘야화사주’로 문의해 주세요.</p>
       <div class="row"><label class="t" for="email">리포트 받을 이메일</label>
         <input type="email" id="email" placeholder="example@naver.com" required></div>
       <label class="check"><input type="checkbox" required> <span><a href="terms.html">이용약관</a>에 동의합니다. (필수)</span></label>
@@ -112,6 +157,31 @@ function copy(text) {
   fallbackCopy(text);
   return Promise.resolve();
 }
+const PLACEHOLDER = {
+  "종합운": ["예) 올해와 내년 흐름이 궁금해요.", "예) 작년에 퇴사하고 쉬는 중이에요."],
+  "취업·이직운": ["예) 내년에 이직해도 될까요?", "예) 관세법인 3년차, 사람 때문에 지쳐서 상반기 안에 옮기고 싶어요."],
+  "궁합": ["예) 이 사람과 결혼까지 갈 수 있을까요?", "예) 소개팅으로 만나 6개월째, 결혼 얘기가 안 나와요."],
+};
+function prod() { return document.querySelector('input[name=prod]:checked').value; }
+function onProd() {
+  const g = prod() === "궁합";
+  $("partner").style.display = g ? "block" : "none";
+  $("me-title").style.display = g ? "block" : "none";
+  ["pnick", "pgender", "py", "pm", "pd"].forEach(id => $(id).required = g);
+  $("q").placeholder = PLACEHOLDER[prod()][0];
+  $("ctx").placeholder = PLACEHOLDER[prod()][1];
+}
+document.querySelectorAll('input[name=prod]').forEach(r => r.addEventListener("change", onProd));
+document.getElementById("pnotime").addEventListener("change", e => {
+  ["phh", "pmi"].forEach(id => { $(id).disabled = e.target.checked; if (e.target.checked) $(id).value = ""; });
+});
+function badDate(cal, y, m, d) {
+  if (cal === "solar") { const t = new Date(Date.UTC(y, m - 1, d)); return t.getUTCMonth() !== m - 1; }
+  return typeof lunarToSolar === "function" && !lunarToSolar(y, m, d, cal === "leap");
+}
+const pad = n => String(n).padStart(2, "0");
+const calName = c => c === "solar" ? "양력" : c === "leap" ? "음력(윤달)" : "음력";
+function timeOf(h, mi, none) { return none || $(h).value === "" ? "모름" : `${pad(+$(h).value)}:${pad(+($(mi).value || 0))}`; }
 function showErr(msg) { $("formErr").textContent = msg; $("formErr").style.display = "block"; }
 $("orderForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -119,14 +189,20 @@ $("orderForm").addEventListener("submit", e => {
   if (!$("orderForm").reportValidity()) return;
   const y = +$("by").value, m = +$("bm").value, d = +$("bd").value;
   const cal = $("cal").value;
-  if (cal === "solar") {
-    const t = new Date(Date.UTC(y, m - 1, d));
-    if (t.getUTCMonth() !== m - 1) return showErr("양력에 없는 날짜예요. 다시 확인해 주세요.");
-  } else if (typeof lunarToSolar === "function" && !lunarToSolar(y, m, d, cal === "leap")) {
-    return showErr(cal === "leap" ? "그 해에는 해당 윤달이 없거나 그 날짜가 없어요." : "음력에 없는 날짜예요.");
+  if (badDate(cal, y, m, d)) return showErr("생년월일에 없는 날짜가 있어요. 양력/음력을 다시 확인해 주세요.");
+  const time = timeOf("hh", "mi", $("notime").checked);
+  const isGung = prod() === "궁합";
+  let partnerLines = [];
+  if (isGung) {
+    const py = +$("py").value, pm = +$("pm").value, pd = +$("pd").value, pc = $("pcal").value;
+    if (badDate(pc, py, pm, pd)) return showErr("상대방 생년월일에 없는 날짜가 있어요.");
+    partnerLines = [
+      `상대이름: ${$("pnick").value.trim().replace(/\s+/g, " ")}`,
+      `상대성별: ${$("pgender").value === "M" ? "남" : "여"}`,
+      `상대생년월일: ${calName(pc)} ${py}-${pad(pm)}-${pad(pd)}`,
+      `상대시간: ${timeOf("phh", "pmi", $("pnotime").checked)}`,
+    ];
   }
-  const noTime = $("notime").checked || $("hh").value === "";
-  const time = noTime ? "모름" : `${String(+$("hh").value).padStart(2, "0")}:${String(+($("mi").value || 0)).padStart(2, "0")}`;
   const now = new Date();
   const id = `YH-${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
   const calTxt = cal === "solar" ? "양력" : cal === "leap" ? "음력(윤달)" : "음력";
@@ -134,12 +210,14 @@ $("orderForm").addEventListener("submit", e => {
   const text = [
     "[夜化 사주풀이 주문]",
     `주문번호: ${id}`,
+    `상품: ${prod()}`,
     `이름: ${oneLine($("nick").value)}`,
     `성별: ${$("gender").value === "M" ? "남" : "여"}`,
     `생년월일: ${calTxt} ${y}-${String(m).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
     `시간: ${time}`,
     `질문: ${oneLine($("q").value)}`,
     `상황: ${oneLine($("ctx").value) || "-"}`,
+    ...partnerLines,
     `이메일: ${$("email").value.trim()}`,
   ].join("\n");
   $("orderText").textContent = text;
@@ -153,6 +231,7 @@ $("copyAcc").addEventListener("click", () => { copy("3333383553064"); $("copyAcc
 document.getElementById("notime").addEventListener("change", e => {
   ["hh", "mi"].forEach(id => { const el = document.getElementById(id); el.disabled = e.target.checked; if (e.target.checked) el.value = ""; });
 });
+onProd();
 </script>
 </body>
 </html>
