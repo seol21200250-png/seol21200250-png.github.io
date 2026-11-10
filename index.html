@@ -16,17 +16,29 @@
 
   <div class="card" id="ilgan">
     <h2 style="margin-top:0">내 일간(日干) 1초 확인</h2>
-    <p>취업운 영상은 <strong>일간</strong> 기준이에요. 태어난 날짜(양력)를 넣어보세요.</p>
+    <p>취업운 영상은 <strong>일간</strong> 기준이에요. 생일이 <strong>양력인지 음력인지</strong> 꼭 골라주세요.</p>
+    <div>
+      <span class="seg" role="radiogroup" aria-label="양력/음력">
+        <label><input type="radio" name="cal" value="solar" checked><span>양력</span></label>
+        <label><input type="radio" name="cal" value="lunar"><span>음력</span></label>
+      </span>
+      <label class="leap" id="leapWrap" hidden><input type="checkbox" id="leap"> 윤달</label>
+    </div>
     <div class="calc">
-      <input id="birth" type="date" min="1940-01-01" max="2015-12-31" value="2000-01-01" aria-label="생년월일 (양력)">
+      <div class="ymd">
+        <input id="y" type="number" inputmode="numeric" min="1930" max="2030" placeholder="년 (예: 1997)" aria-label="태어난 해">
+        <select id="m" aria-label="월"></select>
+        <select id="d" aria-label="일"></select>
+      </div>
       <button id="go" type="button">확인하기</button>
     </div>
+    <p class="err" id="err"></p>
     <div class="result" id="result" aria-live="polite">
       <p class="small" id="pillar"></p>
       <div class="big" id="stem"></div>
       <p><strong id="name"></strong></p>
       <p id="trait"></p>
-      <p class="small">※ 밤 11시 이후 출생이라면 다음 날짜로도 한 번 확인해 보세요. (자시 기준은 학파마다 달라요)</p>
+      <p class="small">※ 밤 11시 이후 출생이라면 다음 날로도 한 번 확인해 보세요. (자시 기준은 학파마다 달라요)</p>
     </div>
   </div>
 
@@ -46,6 +58,7 @@
     <a href="privacy.html">개인정보처리방침</a>
   </footer>
 </main>
+<script src="lunar.js"></script>
 <script>
 const STEMS = "갑을병정무기경신임계", HANJA = "甲乙丙丁戊己庚辛壬癸";
 const BR = "자축인묘진사오미신유술해", BRH = "子丑寅卯辰巳午未申酉戌亥";
@@ -67,18 +80,37 @@ function pillar(y, m, d) {
   const jdn = days + 2440588;               // 율리우스 적일
   return ((jdn + 49) % 60 + 60) % 60;       // 0 = 갑자 (2000-01-01 = 무오)
 }
-document.getElementById("go").addEventListener("click", () => {
-  const v = document.getElementById("birth").value;
-  if (!v) return;
-  const [y, m, d] = v.split("-").map(Number);
-  const p = pillar(y, m, d), s = p % 10, b = p % 12;
+const $ = id => document.getElementById(id);
+for (let i = 1; i <= 12; i++) $("m").add(new Option(i + "월", i));
+for (let i = 1; i <= 31; i++) $("d").add(new Option(i + "일", i));
+document.querySelectorAll('input[name=cal]').forEach(r => r.addEventListener("change", () => {
+  $("leapWrap").hidden = !(document.querySelector('input[name=cal]:checked').value === "lunar");
+}));
+function fail(msg) { $("err").textContent = msg; $("err").style.display = "block"; $("result").classList.remove("show"); }
+$("go").addEventListener("click", () => {
+  $("err").style.display = "none";
+  const y = +$("y").value, m = +$("m").value, d = +$("d").value;
+  if (!(y >= 1930 && y <= 2030)) return fail("태어난 해를 1930~2030 사이로 넣어주세요.");
+  const lunar = document.querySelector('input[name=cal]:checked').value === "lunar";
+  const leap = lunar && $("leap").checked;
+  let sy = y, sm = m, sd = d, from = "";
+  if (lunar) {
+    const r = lunarToSolar(y, m, d, leap);
+    if (!r) return fail(leap ? `${y}년에는 윤${m}월이 없거나, 그 달에 ${d}일이 없어요.` : `음력 ${y}년 ${m}월에는 ${d}일이 없어요.`);
+    [sy, sm, sd] = r;
+    from = ` (음력 ${y}.${m}.${d}${leap ? " 윤달" : ""})`;
+  } else {
+    const t = new Date(Date.UTC(y, m - 1, d));
+    if (t.getUTCMonth() !== m - 1) return fail(`양력 ${y}년 ${m}월에는 ${d}일이 없어요.`);
+  }
+  const p = pillar(sy, sm, sd), s = p % 10, b = p % 12;
   const ko = STEMS[s] + BR[b];
   const pillarName = ko === "병신" ? HANJA[s] + BRH[b] : ko + "(" + HANJA[s] + BRH[b] + ")";
-  document.getElementById("pillar").textContent = `${y}년 ${m}월 ${d}일 · 일주 ${pillarName}`;
-  document.getElementById("stem").textContent = HANJA[s];
-  document.getElementById("name").textContent = `내 일간은 ${STEMS[s]}${EL[s]} (${HANJA[s]})`;
-  document.getElementById("trait").textContent = TRAIT[s];
-  document.getElementById("result").classList.add("show");
+  $("pillar").textContent = `양력 ${sy}.${sm}.${sd}${from} · 일주 ${pillarName}`;
+  $("stem").textContent = HANJA[s];
+  $("name").textContent = `내 일간은 ${STEMS[s]}${EL[s]} (${HANJA[s]})`;
+  $("trait").textContent = TRAIT[s];
+  $("result").classList.add("show");
 });
 </script>
 </body>
