@@ -18,9 +18,10 @@
     <div class="price">9,900원 <small>부가세 포함</small></div>
     <ul>
       <li>사주 원국 · 오행 · 십신 · 대운 정리</li>
-      <li><strong>궁금한 점 1~2가지</strong>에 대한 결론과 근거 (취업·이직, 연애·재회·결혼, 사업·재물 등)</li>
+      <li><strong>가장 궁금한 질문 1가지</strong>에 대한 결론과 근거 (취업·이직, 연애·재회·결혼, 사업·재물 등)</li>
+      <li>타고난 성향(일주), 지나온 시기와 지금 상황 읽기</li>
       <li>2026~2028년 흐름과 <strong>시기별 조언</strong> (필요 시 월 단위)</li>
-      <li>夜化의 최종 답 · A4 1~2쪽 PDF</li>
+      <li>오행으로 보는 개운법 · 夜化의 최종 답 · A4 1~2쪽 PDF</li>
     </ul>
     <p class="small">결제 후 <strong>24시간 이내</strong> 입력하신 이메일로 발송됩니다. (보통 더 빨리 도착해요)</p>
   </div>
@@ -55,8 +56,13 @@
           <input type="number" id="mi" min="0" max="59" placeholder="분">
           <label class="check" style="flex:1 1 140px"><input type="checkbox" id="notime"> 시간 모름</label>
         </div></div>
-      <div class="row"><label class="t" for="q">궁금한 점 (1~2가지)</label>
-        <textarea id="q" maxlength="400" placeholder="예) 내년에 이직해도 될까요? 지금 관세법인 3년차예요." required></textarea></div>
+      <div class="row"><label class="t" for="q">가장 궁금한 질문 <strong>1가지</strong></label>
+        <textarea id="q" maxlength="120" placeholder="예) 내년에 이직해도 될까요?" required style="min-height:70px"></textarea>
+        <p class="small" id="qcount" style="text-align:right;margin:4px 0 0">0 / 120</p></div>
+      <div class="row"><label class="t" for="ctx">지금 상황 (선택)</label>
+        <textarea id="ctx" maxlength="300" placeholder="예) 관세법인 3년차, 사람 때문에 지쳐서 상반기 안에 옮기고 싶어요." style="min-height:90px"></textarea>
+        <p class="small" style="margin:4px 0 0">상황을 적어주시면 풀이가 훨씬 구체적이에요. 질문이 여러 개라면 가장 중요한 하나를 깊게, 나머지는 짧게 답해드려요.</p></div>
+      <p class="sample" style="font-size:.9rem">💞 상대방 생년월일까지 함께 보고 싶다면 <strong>궁합 풀이</strong>로 안내해 드려요. 카카오톡 오픈채팅 ‘야화사주’로 문의해 주세요.</p>
       <div class="row"><label class="t" for="email">리포트 받을 이메일</label>
         <input type="email" id="email" placeholder="example@naver.com" required></div>
       <label class="check"><input type="checkbox" required> <span><a href="terms.html">이용약관</a>에 동의합니다. (필수)</span></label>
@@ -74,6 +80,9 @@
 </main>
 <script src="biz.js"></script>
 <script>
+document.getElementById("q").addEventListener("input", e => {
+  document.getElementById("qcount").textContent = `${e.target.value.length} / 120`;
+});
 document.getElementById("notime").addEventListener("change", e => {
   ["hh", "mi"].forEach(id => { const el = document.getElementById(id); el.disabled = e.target.checked; if (e.target.checked) el.value = ""; });
 });
