@@ -3,32 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>야화 사주</title>
-<meta name="description" content="매일 아침, 태어난 해 끝자리로 보는 오늘의 사주 숏츠">
+<title>야화 취업사주</title>
+<meta name="description" content="취준생을 위한 오늘의 사주 · 입사 지원 타이밍 · 면접 개운법. 생년월일로 내 일간 1초 확인">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-  <span class="tag">夜話 四柱</span>
-  <h1>야화 사주</h1>
-  <p>밤에 나누는 조용한 사주 이야기.<br>매일 아침, <strong>태어난 해 끝자리</strong>로 보는 오늘의 운세 숏츠를 올립니다.</p>
+  <span class="tag">夜話 就業 四柱</span>
+  <h1>야화 취업사주</h1>
+  <p>취준생을 위한 오늘의 사주.<br>
+  <strong>매일 아침 7시</strong> 오늘의 운세, <strong>월·수·금</strong> 입사 지원 타이밍과 면접 개운법을 올립니다.</p>
 
-  <div class="card">
-    <h2 style="margin-top:0">숏츠 보는 법</h2>
-    <p>태어난 해의 끝자리(예: 1997년생 → <strong>7</strong>)가 나의 연간(年干) 천간입니다.
-    오늘 일진과의 십신 관계를 계산해 0~9 숫자별 한 줄 운세를 전해드려요.
-    1~2월 초 출생은 입춘(2월 4일 무렵) 전이면 앞 해 끝자리로 봐주세요.</p>
+  <div class="card" id="ilgan">
+    <h2 style="margin-top:0">내 일간(日干) 1초 확인</h2>
+    <p>취업운 영상은 <strong>일간</strong> 기준이에요. 태어난 날짜(양력)를 넣어보세요.</p>
+    <div class="calc">
+      <input id="birth" type="date" min="1940-01-01" max="2015-12-31" value="2000-01-01" aria-label="생년월일 (양력)">
+      <button id="go" type="button">확인하기</button>
+    </div>
+    <div class="result" id="result" aria-live="polite">
+      <p class="small" id="pillar"></p>
+      <div class="big" id="stem"></div>
+      <p><strong id="name"></strong></p>
+      <p id="trait"></p>
+      <p class="small">※ 밤 11시 이후 출생이라면 다음 날짜로도 한 번 확인해 보세요. (자시 기준은 학파마다 달라요)</p>
+    </div>
   </div>
 
   <div class="card">
-    <h2 style="margin-top:0">사주 상담</h2>
-    <p>상담 안내는 준비 중입니다. 유튜브 채널을 구독하시면 가장 먼저 알려드릴게요.</p>
+    <h2 style="margin-top:0">영상 보는 법</h2>
+    <p><strong>오늘의 운세</strong>: 태어난 해 끝자리(예: 1997년생 → 7)로 보는 0~9 숫자별 한 줄.</p>
+    <p><strong>취업운</strong>: 위에서 확인한 내 일간을 찾아 지원 타이밍과 면접 개운법을 확인하세요.</p>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">취업 사주 상담</h2>
+    <p>1:1 취업 사주 상담은 준비 중입니다. 유튜브 채널을 구독하시면 가장 먼저 알려드릴게요.</p>
   </div>
 
   <footer>
-    재미로 보는 운세이며, 중요한 결정의 근거로 삼지 마세요.<br>
+    재미로 보는 운세이며, 중요한 결정은 스스로의 판단으로 해주세요.<br>
     <a href="privacy.html">개인정보처리방침</a>
   </footer>
 </main>
+<script>
+const STEMS = "갑을병정무기경신임계", HANJA = "甲乙丙丁戊己庚辛壬癸";
+const BR = "자축인묘진사오미신유술해", BRH = "子丑寅卯辰巳午未申酉戌亥";
+const EL = ["목","목","화","화","토","토","금","금","수","수"];
+const TRAIT = [
+  "곧게 뻗는 큰 나무. 리더십과 추진력이 강점이에요. 기획·관리 직무와 잘 맞아요.",
+  "유연한 풀꽃. 협업과 적응력이 뛰어나요. 서비스·마케팅 직무와 잘 맞아요.",
+  "하늘의 태양. 밝은 에너지와 발표력이 무기예요. 영업·홍보 직무와 잘 맞아요.",
+  "따뜻한 촛불. 섬세한 집중력이 강점이에요. 연구·디자인 직무와 잘 맞아요.",
+  "듬직한 큰 산. 신뢰감과 안정감을 줘요. 관리·공공 직무와 잘 맞아요.",
+  "기름진 땅. 꼼꼼함과 실무력이 뛰어나요. 인사·회계 직무와 잘 맞아요.",
+  "단단한 바위. 결단력과 원칙이 강점이에요. 엔지니어·법무 직무와 잘 맞아요.",
+  "빛나는 보석. 감각과 완성도가 남달라요. 품질·디자인·금융 직무와 잘 맞아요.",
+  "넓은 바다. 큰 시야와 전략이 강점이에요. 기획·무역 직무와 잘 맞아요.",
+  "촉촉한 이슬비. 직관과 공감력이 뛰어나요. 상담·콘텐츠 직무와 잘 맞아요."
+];
+function pillar(y, m, d) {
+  const days = Math.floor(Date.UTC(y, m - 1, d) / 86400000);
+  const jdn = days + 2440588;               // 율리우스 적일
+  return ((jdn + 49) % 60 + 60) % 60;       // 0 = 갑자 (2000-01-01 = 무오)
+}
+document.getElementById("go").addEventListener("click", () => {
+  const v = document.getElementById("birth").value;
+  if (!v) return;
+  const [y, m, d] = v.split("-").map(Number);
+  const p = pillar(y, m, d), s = p % 10, b = p % 12;
+  const ko = STEMS[s] + BR[b];
+  const pillarName = ko === "병신" ? HANJA[s] + BRH[b] : ko + "(" + HANJA[s] + BRH[b] + ")";
+  document.getElementById("pillar").textContent = `${y}년 ${m}월 ${d}일 · 일주 ${pillarName}`;
+  document.getElementById("stem").textContent = HANJA[s];
+  document.getElementById("name").textContent = `내 일간은 ${STEMS[s]}${EL[s]} (${HANJA[s]})`;
+  document.getElementById("trait").textContent = TRAIT[s];
+  document.getElementById("result").classList.add("show");
+});
+</script>
 </body>
 </html>
