@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>夜化 간편 주문 · 야화</title>
+<meta name="description" content="버튼만 눌러서 끝내는 夜化 사주풀이 간편 주문">
+<link rel="stylesheet" href="style.css">
+<style>
+main{padding-top:28px;font-size:1.15rem}
+h1{font-size:1.8rem}
+.q{font-size:1.6rem;font-weight:800;color:var(--text);margin:8px 0 4px;line-height:1.4}
+.hint{color:var(--sub);font-size:1.05rem;margin:0 0 14px}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.12);margin:14px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);width:0;transition:width .3s}
+.stepno{color:var(--sub);font-size:1rem}
+.pick{display:flex;flex-direction:column;gap:12px}
+.pick button{font:inherit;font-size:1.3rem;font-weight:800;text-align:left;padding:20px 22px;border-radius:16px;border:2px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;line-height:1.35}
+.pick button small{display:block;font-size:1rem;font-weight:400;color:var(--sub);margin-top:4px}
+.pick button.on{background:var(--gold);color:#1a1440;border-color:var(--gold)}
+.pick button.on small{color:#3a2f60}
+.two{flex-direction:row}.two button{flex:1;text-align:center}
+.big-in{width:100%;font:inherit;font-size:1.35rem;padding:16px;border-radius:14px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text);margin-bottom:12px}
+select.big-in option{color:#111}
+textarea.big-in{min-height:110px}
+.nav{display:flex;gap:10px;margin-top:22px}
+.nav button{font:inherit;font-size:1.3rem;font-weight:800;padding:18px;border-radius:16px;border:0;cursor:pointer}
+.nav .back{flex:0 0 32%;background:rgba(255,255,255,.12);color:var(--text)}
+.nav .next{flex:1;background:var(--gold);color:#1a1440}
+.agree{border:2px solid rgba(255,255,255,.25);border-radius:16px;padding:16px 18px}
+.agree .all{display:flex;gap:12px;align-items:center;font-size:1.3rem;font-weight:800;color:var(--text);cursor:pointer}
+.agree input{width:28px;height:28px;accent-color:#f5c76b;flex:0 0 auto}
+.agree ul{margin:12px 0 0;padding-left:1.1em;font-size:1rem}
+.err{font-size:1.1rem;text-align:center}
+.step{display:none}.step.show{display:block}
+.pay{font-size:1.25rem;line-height:1.8}
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">夜化 · 하루의 답은, 밤에 있다</span>
+  <h1>夜化 간편 주문</h1>
+  <p style="margin:4px 0 0">버튼만 누르면 돼요. 모르는 건 <strong>"모름"</strong>을 누르셔도 괜찮아요.</p>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="stepno" id="stepno"></div>
+
+  <!-- 1. 상품 -->
+  <section class="step" data-k="prod">
+    <div class="q">무엇이 궁금하세요?</div>
+    <div class="pick" data-name="prod">
+      <button type="button" data-v="종합운">내 운세 · 2027 신년운세<small>9,900원 · 평생 흐름, 돈·건강·가족, 내년 운세까지</small></button>
+      <button type="button" data-v="취업·이직운">취업 · 이직운<small>9,900원 · 자녀분 취업운도 신청할 수 있어요</small></button>
+      <button type="button" data-v="궁합">궁합 (두 사람)<small>14,900원 · 부부, 연인, 자녀와 예비 배우자</small></button>
+    </div>
+  </section>
+
+  <!-- 2. 이름·성별 -->
+  <section class="step" data-k="me">
+    <div class="q" id="meQ">풀이 받으실 분은 누구세요?</div>
+    <p class="hint">이름 대신 별명도 좋아요. (예: 큰딸, 순이)</p>
+    <input class="big-in" id="nick" maxlength="20" placeholder="이름 또는 별명">
+    <div class="pick two" data-name="gender">
+      <button type="button" data-v="F">여자</button>
+      <button type="button" data-v="M">남자</button>
+    </div>
+  </section>
+
+  <!-- 3. 생년월일 -->
+  <section class="step" data-k="birth">
+    <div class="q" id="birthQ">태어난 날을 골라주세요</div>
+    <select class="big-in" id="by"></select>
+    <div class="inline"><select class="big-in" id="bm"></select><select class="big-in" id="bd"></select></div>
+    <div class="pick" data-name="cal">
+      <button type="button" data-v="solar">양력이에요</button>
+      <button type="button" data-v="lunar">음력이에요</button>
+      <button type="button" data-v="unknown">잘 모르겠어요<small>괜찮아요. 오픈채팅에서 같이 확인해 드려요</small></button>
+    </div>
+  </section>
+
+  <!-- 4. 시간 -->
+  <section class="step" data-k="time">
+    <div class="q" id="timeQ">태어난 시간을 아세요?</div>
+    <p class="hint">몰라도 풀이할 수 있어요.</p>
+    <select class="big-in" id="hour"></select>
+  </section>
+
+  <!-- 5~7. 궁합 상대 -->
+  <section class="step" data-k="p_me" data-gung>
+    <div class="q">상대방은 누구세요?</div>
+    <input class="big-in" id="pnick" maxlength="20" placeholder="예) 남편, 남자친구, 사위">
+    <div class="pick two" data-name="pgender">
+      <button type="button" data-v="F">여자</button>
+      <button type="button" data-v="M">남자</button>
+    </div>
+  </section>
+  <section class="step" data-k="p_birth" data-gung>
+    <div class="q">상대방이 태어난 날</div>
+    <select class="big-in" id="py"></select>
+    <div class="inline"><select class="big-in" id="pm"></select><select class="big-in" id="pd"></select></div>
+    <div class="pick" data-name="pcal">
+      <button type="button" data-v="solar">양력이에요</button>
+      <button type="button" data-v="lunar">음력이에요</button>
+      <button type="button" data-v="unknown">잘 모르겠어요</button>
+    </div>
+  </section>
+  <section class="step" data-k="p_time" data-gung>
+    <div class="q">상대방이 태어난 시간</div>
+    <select class="big-in" id="phour"></select>
+  </section>
+
+  <!-- 8. 질문 -->
+  <section class="step" data-k="ask">
+    <div class="q">특히 궁금한 게 있으세요?</div>
+    <p class="hint">없으면 비워두고 "다음"을 누르세요.</p>
+    <textarea class="big-in" id="q" maxlength="120" placeholder="예) 우리 아들 내년에 취업할 수 있을까요?"></textarea>
+  </section>
+
+  <!-- 9. 받는 곳 + 동의 -->
+  <section class="step" data-k="end">
+    <div class="q">풀이를 어디로 보내드릴까요?</div>
+    <p class="hint">이메일이 없으면 비워두세요. <strong>카카오톡 오픈채팅으로 보내드려요.</strong></p>
+    <input class="big-in" id="email" type="email" placeholder="이메일 (없으면 비워두세요)">
+    <div class="agree">
+      <label class="all"><input type="checkbox" id="agreeAll"> 아래 내용에 모두 동의해요 (필수)</label>
+      <ul>
+        <li><a href="terms.html" target="_blank">이용약관</a> 동의</li>
+        <li><a href="privacy.html" target="_blank">개인정보 수집·이용 및 국외 이전</a> 동의 (풀이 후 7일 안에 삭제)</li>
+        <li>맞춤 제작 콘텐츠라 <strong>발송 후에는 환불이 어려운 점</strong> 확인</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 완료 -->
+  <section class="step" data-k="done">
+    <div class="q">✅ 거의 다 됐어요!</div>
+    <ol class="steps pay">
+      <li><strong id="payAmount">9,900원</strong>을 보내주세요.<br>
+        <span class="sample" style="display:block;margin-top:6px">카카오뱅크 <strong>3333-38-3553064</strong><br>예금주 <strong>전현정</strong></span>
+        <button class="btn" type="button" id="copyAcc">계좌번호 복사</button></li>
+      <li>아래 버튼을 눌러 <strong>오픈채팅 '야화사주'</strong>에 들어가서, 채팅창을 길게 눌러 <strong>붙여넣기</strong> 해주세요.
+        <a class="btn" id="goKakao" href="https://open.kakao.com/o/s6bPNkGh" target="_blank" rel="noopener">주문서 복사하고 오픈채팅 열기</a></li>
+      <li>입금이 확인되면 풀이가 완성되는 대로 보내드려요.</li>
+    </ol>
+    <p class="small">붙여넣기가 안 되면 아래 내용을 길게 눌러 복사해 주세요.</p>
+    <pre id="orderText" style="white-space:pre-wrap;background:rgba(255,255,255,.06);padding:12px;border-radius:10px;font-size:1rem"></pre>
+  </section>
+
+  <p class="err" id="err"></p>
+  <div class="nav" id="nav">
+    <button type="button" class="back" id="back">← 이전</button>
+    <button type="button" class="next" id="next">다음 →</button>
+  </div>
+
+  <p class="small" style="margin-top:28px">입력할 게 많아도 괜찮으시면 <a href="report.html">자세한 주문 페이지</a>도 있어요.</p>
+  <footer>
+    재미와 참고를 위한 명리학적 해석이며, 중요한 결정은 스스로의 판단으로 해주세요.
+    <div data-biz></div>
+  </footer>
+</main>
+<script src="lunar.js"></script>
+<script src="biz.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const ANIMAL = ["원숭이", "닭", "개", "돼지", "쥐", "소", "호랑이", "토끼", "용", "뱀", "말", "양"];
+const SIJI = [["모름", "모르겠어요"], ["23:30", "자시 · 밤 11시 반 ~ 새벽 1시 반"], ["01:30", "축시 · 새벽 1시 반 ~ 3시 반"],
+  ["03:30", "인시 · 새벽 3시 반 ~ 5시 반"], ["05:30", "묘시 · 새벽 5시 반 ~ 7시 반"], ["07:30", "진시 · 아침 7시 반 ~ 9시 반"],
+  ["09:30", "사시 · 오전 9시 반 ~ 11시 반"], ["11:30", "오시 · 낮 11시 반 ~ 1시 반"], ["13:30", "미시 · 낮 1시 반 ~ 3시 반"],
+  ["15:30", "신시 · 오후 3시 반 ~ 5시 반"], ["17:30", "유시 · 저녁 5시 반 ~ 7시 반"], ["19:30", "술시 · 저녁 7시 반 ~ 9시 반"],
+  ["21:30", "해시 · 밤 9시 반 ~ 11시 반"]];
+function fillDate(y, m, d, def) {
+  $(y).innerHTML = `<option value="">태어난 해</option>` + Array.from({length: 2012 - 1935}, (_, i) => 2011 - i)
+    .map(v => `<option value="${v}">${v}년 (${String(v % 100).padStart(2, "0")}년생 · ${ANIMAL[v % 12]}띠)</option>`).join("");
+  $(m).innerHTML = `<option value="">월</option>` + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join("");
+  $(d).innerHTML = `<option value="">일</option>` + Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}일</option>`).join("");
+  if (def) $(y).value = def;
+}
+fillDate("by", "bm", "bd", 1970); fillDate("py", "pm", "pd", 1970);
+for (const h of ["hour", "phour"]) $(h).innerHTML = SIJI.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+
+const val = {};
+document.querySelectorAll(".pick").forEach(g => g.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  val[g.dataset.name] = b.dataset.v;
+  err("");
+  if (g.dataset.name === "prod") setTimeout(() => go(1), 250);   // 상품은 누르면 바로 다음
+}));
+
+const steps = [...document.querySelectorAll(".step")];
+let cur = 0;
+const isGung = () => val.prod === "궁합";
+const visible = () => steps.filter(s => s.dataset.k !== "done" && (!s.hasAttribute("data-gung") || isGung()));
+function err(t) { $("err").textContent = t; $("err").style.display = t ? "block" : "none"; }
+function show(i) {
+  const vis = visible();
+  cur = i;
+  steps.forEach(s => s.classList.toggle("show", s === vis[i]));
+  $("bar").style.width = `${Math.round((i + 1) / vis.length * 100)}%`;
+  $("stepno").textContent = `${i + 1} / ${vis.length}`;
+  $("back").style.visibility = i === 0 ? "hidden" : "visible";
+  $("next").textContent = i === vis.length - 1 ? "주문서 만들기 ✓" : "다음 →";
+  $("nav").style.display = vis[i].dataset.k === "prod" && !val.prod ? "none" : "flex";
+  const g = isGung();
+  $("meQ").textContent = g ? "먼저, 본인은 누구세요?" : "풀이 받으실 분은 누구세요?";
+  $("birthQ").textContent = g ? "본인이 태어난 날" : "태어난 날을 골라주세요";
+  $("timeQ").textContent = g ? "본인이 태어난 시간을 아세요?" : "태어난 시간을 아세요?";
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+function check(k) {
+  if (k === "prod" && !val.prod) return "무엇이 궁금한지 골라주세요.";
+  if (k === "me" && !$("nick").value.trim()) return "이름이나 별명을 적어주세요.";
+  if (k === "me" && !val.gender) return "여자/남자를 골라주세요.";
+  if (k === "birth" && !($("by").value && $("bm").value && $("bd").value)) return "태어난 해, 월, 일을 모두 골라주세요.";
+  if (k === "birth" && !val.cal) return "양력인지 음력인지 골라주세요. 모르면 '잘 모르겠어요'를 누르세요.";
+  if (k === "p_me" && !$("pnick").value.trim()) return "상대방 이름이나 별명을 적어주세요.";
+  if (k === "p_me" && !val.pgender) return "상대방 여자/남자를 골라주세요.";
+  if (k === "p_birth" && !($("py").value && $("pm").value && $("pd").value)) return "상대방 태어난 해, 월, 일을 골라주세요.";
+  if (k === "p_birth" && !val.pcal) return "상대방 양력/음력을 골라주세요.";
+  if (k === "end" && $("email").value.trim() && !$("email").checkValidity()) return "이메일 주소를 다시 확인해 주세요.";
+  if (k === "end" && !$("agreeAll").checked) return "동의에 체크해 주세요.";
+  return "";
+}
+function go(dir) {
+  const vis = visible();
+  if (dir > 0) { const m = check(vis[cur].dataset.k); if (m) return err(m); }
+  err("");
+  if (dir > 0 && cur === vis.length - 1) return finish();
+  show(Math.max(0, cur + dir));
+}
+$("next").onclick = () => go(1);
+$("back").onclick = () => go(-1);
+
+const pad = n => String(n).padStart(2, "0");
+const calName = c => c === "solar" ? "양력" : c === "lunar" ? "음력" : "양력/음력 모름";
+const one = v => v.trim().replace(/\s+/g, " ");
+let text = "";
+function finish() {
+  const now = new Date();
+  const id = `YH-${pad(now.getMonth() + 1)}${pad(now.getDate())}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const lines = [
+    "[夜化 간편 주문]", `주문번호: ${id}`, `상품: ${val.prod}`,
+    `이름: ${one($("nick").value)}`, `성별: ${val.gender === "M" ? "남" : "여"}`,
+    `생년월일: ${calName(val.cal)} ${$("by").value}-${pad($("bm").value)}-${pad($("bd").value)} (${ANIMAL[$("by").value % 12]}띠)`,
+    `시간: ${$("hour").value}`,
+  ];
+  if (isGung()) lines.push(
+    `상대이름: ${one($("pnick").value)}`, `상대성별: ${val.pgender === "M" ? "남" : "여"}`,
+    `상대생년월일: ${calName(val.pcal)} ${$("py").value}-${pad($("pm").value)}-${pad($("pd").value)}`,
+    `상대시간: ${$("phour").value}`);
+  lines.push(`질문: ${one($("q").value) || "전체 흐름이 궁금해요"}`,
+    `받는 곳: ${$("email").value.trim() || "카카오톡 오픈채팅"}`,
+    `입금자명: ${one($("nick").value).slice(0, 5)}${id.slice(-4)}`);
+  text = lines.join("\n");
+  $("orderText").textContent = text;
+  $("payAmount").textContent = isGung() ? "14,900원" : "9,900원";
+  copy(text);
+  steps.forEach(s => s.classList.toggle("show", s.dataset.k === "done"));
+  $("nav").style.display = "none"; $("stepno").textContent = "마지막 단계"; $("bar").style.width = "100%";
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+function fallbackCopy(t) {
+  const a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select();
+  try { document.execCommand("copy"); } catch (e) {} a.remove();
+}
+function copy(t) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).catch(() => fallbackCopy(t));
+  fallbackCopy(t);
+}
+$("copyAcc").onclick = () => { copy("3333383553064"); $("copyAcc").textContent = "복사됐어요 ✓"; };
+$("goKakao").addEventListener("click", () => copy(text));
+show(0);
+</script>
+</body>
+</html>
