@@ -42,7 +42,10 @@ textarea.big-in{min-height:110px}
   <h1>夜化 간편 주문</h1>
   <p style="margin:4px 0 0">버튼만 누르면 돼요. 모르는 건 <strong>"모름"</strong>을 누르셔도 괜찮아요.</p>
   <div class="bar"><i id="bar"></i></div>
-  <div class="stepno" id="stepno"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div class="stepno" id="stepno"></div>
+    <button type="button" id="topBack" style="font:inherit;font-size:1.05rem;font-weight:700;padding:8px 16px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:var(--text);cursor:pointer">← 이전으로</button>
+  </div>
 
   <!-- 1. 상품 -->
   <section class="step" data-k="prod">
@@ -127,6 +130,9 @@ textarea.big-in{min-height:110px}
     <div class="q">특히 궁금한 게 있으세요?</div>
     <p class="hint">없으면 비워두고 "다음"을 누르세요.</p>
     <textarea class="big-in" id="q" maxlength="120" placeholder="예) 우리 아들 내년에 취업할 수 있을까요?"></textarea>
+    <div class="q" style="font-size:1.35rem;margin-top:18px">인생에서 큰 일이 있었던 해가 있나요?</div>
+    <p class="hint">적어주시면 풀이가 훨씬 정확해져요. 기억나는 것만, 없으면 비워두세요.</p>
+    <textarea class="big-in" id="life" maxlength="200" placeholder="예) 1995년 결혼, 2008년 이사, 2019년 퇴직, 2022년 큰 수술"></textarea>
   </section>
 
   <!-- 9. 받는 곳 + 동의 -->
@@ -147,6 +153,7 @@ textarea.big-in{min-height:110px}
   <!-- 완료 -->
   <section class="step" data-k="done">
     <div class="q">✅ 거의 다 됐어요!</div>
+    <button class="btn" type="button" id="fix" style="background:rgba(255,255,255,.12);color:var(--text)">← 잘못 적었어요 (고치러 가기)</button>
     <ol class="steps pay">
       <li><strong id="payAmount">9,900원</strong>을 보내주세요.<br>
         <span class="sample" style="display:block;margin-top:6px">카카오뱅크 <strong>3333-38-3553064</strong><br>예금주 <strong>전현정</strong></span>
@@ -207,13 +214,17 @@ let cur = 0;
 const isGung = () => val.prod === "궁합";
 const visible = () => steps.filter(s => s.dataset.k !== "done" && (!s.hasAttribute("data-gung") || isGung()));
 function err(t) { $("err").textContent = t; $("err").style.display = t ? "block" : "none"; }
-function show(i) {
+let fromPop = false;
+function show(i, pop) {
+  fromPop = !!pop;
   const vis = visible();
   cur = i;
   steps.forEach(s => s.classList.toggle("show", s === vis[i]));
   $("bar").style.width = `${Math.round((i + 1) / vis.length * 100)}%`;
   $("stepno").textContent = `${i + 1} / ${vis.length}`;
   $("back").style.visibility = i === 0 ? "hidden" : "visible";
+  $("topBack").style.visibility = i === 0 ? "hidden" : "visible";
+  if (!fromPop) history.pushState({i}, "");
   $("next").textContent = i === vis.length - 1 ? "주문서 만들기 ✓" : "다음 →";
   $("nav").style.display = vis[i].dataset.k === "prod" && !val.prod ? "none" : "flex";
   const g = isGung();
@@ -249,6 +260,14 @@ function go(dir) {
 }
 $("next").onclick = () => go(1);
 $("back").onclick = () => go(-1);
+$("topBack").onclick = () => go(-1);
+$("fix").onclick = () => { $("nav").style.display = "flex"; show(visible().length - 1); };
+history.replaceState({i: 0}, "");
+window.addEventListener("popstate", e => {   // 휴대폰 '뒤로가기'를 눌러도 이전 질문으로
+  const i = e.state && typeof e.state.i === "number" ? e.state.i : 0;
+  $("nav").style.display = "flex";
+  show(Math.min(i, visible().length - 1), true);
+});
 
 const pad = n => String(n).padStart(2, "0");
 const calName = c => c === "solar" ? "양력" : c === "lunar" ? "음력" : "양력/음력 모름";
@@ -267,7 +286,9 @@ function finish() {
     `상대이름: ${one($("pnick").value)}`, `상대성별: ${val.pgender === "M" ? "남" : "여"}`,
     `상대생년월일: ${calName(val.pcal)} ${$("py").value}-${pad($("pm").value)}-${pad($("pd").value)}`,
     `상대시간: ${val.pknowt === "yes" ? $("phour").value + " (" + $("phour").selectedOptions[0].text.split(" · ")[0] + ")" : "모름"}`);
+  const life = one($("life").value);
   lines.push(`질문: ${one($("q").value) || "전체 흐름이 궁금해요"}`,
+    `상황: ${life ? "[인생의 큰 일] " + life : "-"}`,
     `받는 곳: ${$("email").value.trim() || "카카오톡 오픈채팅"}`,
     `입금자명: ${one($("nick").value).slice(0, 5)}${id.slice(-4)}`);
   text = lines.join("\n");
@@ -276,6 +297,8 @@ function finish() {
   copy(text);
   steps.forEach(s => s.classList.toggle("show", s.dataset.k === "done"));
   $("nav").style.display = "none"; $("stepno").textContent = "마지막 단계"; $("bar").style.width = "100%";
+  $("topBack").style.visibility = "hidden";
+  history.pushState({i: visible().length - 1, done: 1}, "");
   window.scrollTo({top: 0, behavior: "smooth"});
 }
 function fallbackCopy(t) {
@@ -288,7 +311,7 @@ function copy(t) {
 }
 $("copyAcc").onclick = () => { copy("3333383553064"); $("copyAcc").textContent = "복사됐어요 ✓"; };
 $("goKakao").addEventListener("click", () => copy(text));
-show(0);
+show(0, true);
 </script>
 </body>
 </html>
