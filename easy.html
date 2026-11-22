@@ -81,7 +81,14 @@ textarea.big-in{min-height:110px}
   <section class="step" data-k="time">
     <div class="q" id="timeQ">태어난 시간을 아세요?</div>
     <p class="hint">몰라도 풀이할 수 있어요.</p>
-    <select class="big-in" id="hour"></select>
+    <div class="pick two" data-name="knowt">
+      <button type="button" data-v="no">몰라요</button>
+      <button type="button" data-v="yes">알아요</button>
+    </div>
+    <div id="hourBox" style="display:none;margin-top:14px">
+      <p class="hint" style="margin-bottom:6px">👇 눌러서 태어난 시간을 골라주세요</p>
+      <select class="big-in" id="hour"></select>
+    </div>
   </section>
 
   <!-- 5~7. 궁합 상대 -->
@@ -104,8 +111,15 @@ textarea.big-in{min-height:110px}
     </div>
   </section>
   <section class="step" data-k="p_time" data-gung>
-    <div class="q">상대방이 태어난 시간</div>
-    <select class="big-in" id="phour"></select>
+    <div class="q">상대방이 태어난 시간을 아세요?</div>
+    <div class="pick two" data-name="pknowt">
+      <button type="button" data-v="no">몰라요</button>
+      <button type="button" data-v="yes">알아요</button>
+    </div>
+    <div id="phourBox" style="display:none;margin-top:14px">
+      <p class="hint" style="margin-bottom:6px">👇 눌러서 태어난 시간을 골라주세요</p>
+      <select class="big-in" id="phour"></select>
+    </div>
   </section>
 
   <!-- 8. 질문 -->
@@ -175,7 +189,7 @@ function fillDate(y, m, d, def) {
   if (def) $(y).value = def;
 }
 fillDate("by", "bm", "bd", 1970); fillDate("py", "pm", "pd", 1970);
-for (const h of ["hour", "phour"]) $(h).innerHTML = SIJI.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+for (const h of ["hour", "phour"]) $(h).innerHTML = `<option value="">여기를 눌러 고르세요</option>` + SIJI.slice(1).map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
 
 const val = {};
 document.querySelectorAll(".pick").forEach(g => g.addEventListener("click", e => {
@@ -183,7 +197,9 @@ document.querySelectorAll(".pick").forEach(g => g.addEventListener("click", e =>
   g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
   val[g.dataset.name] = b.dataset.v;
   err("");
-  if (g.dataset.name === "prod") setTimeout(() => go(1), 250);   // 상품은 누르면 바로 다음
+  if (g.dataset.name === "prod") setTimeout(() => go(1), 250);
+  if (g.dataset.name === "knowt") $("hourBox").style.display = b.dataset.v === "yes" ? "block" : "none";
+  if (g.dataset.name === "pknowt") $("phourBox").style.display = b.dataset.v === "yes" ? "block" : "none";   // 상품은 누르면 바로 다음
 }));
 
 const steps = [...document.querySelectorAll(".step")];
@@ -212,6 +228,10 @@ function check(k) {
   if (k === "me" && !val.gender) return "여자/남자를 골라주세요.";
   if (k === "birth" && !($("by").value && $("bm").value && $("bd").value)) return "태어난 해, 월, 일을 모두 골라주세요.";
   if (k === "birth" && !val.cal) return "양력인지 음력인지 골라주세요. 모르면 '잘 모르겠어요'를 누르세요.";
+  if (k === "time" && !val.knowt) return "태어난 시간을 아시는지 골라주세요. 몰라도 괜찮아요.";
+  if (k === "time" && val.knowt === "yes" && !$("hour").value) return "태어난 시간을 골라주세요.";
+  if (k === "p_time" && !val.pknowt) return "상대방 태어난 시간을 아시는지 골라주세요.";
+  if (k === "p_time" && val.pknowt === "yes" && !$("phour").value) return "상대방 태어난 시간을 골라주세요.";
   if (k === "p_me" && !$("pnick").value.trim()) return "상대방 이름이나 별명을 적어주세요.";
   if (k === "p_me" && !val.pgender) return "상대방 여자/남자를 골라주세요.";
   if (k === "p_birth" && !($("py").value && $("pm").value && $("pd").value)) return "상대방 태어난 해, 월, 일을 골라주세요.";
@@ -241,12 +261,12 @@ function finish() {
     "[夜化 간편 주문]", `주문번호: ${id}`, `상품: ${val.prod}`,
     `이름: ${one($("nick").value)}`, `성별: ${val.gender === "M" ? "남" : "여"}`,
     `생년월일: ${calName(val.cal)} ${$("by").value}-${pad($("bm").value)}-${pad($("bd").value)} (${ANIMAL[$("by").value % 12]}띠)`,
-    `시간: ${$("hour").value}`,
+    `시간: ${val.knowt === "yes" ? $("hour").value + " (" + $("hour").selectedOptions[0].text.split(" · ")[0] + ")" : "모름"}`,
   ];
   if (isGung()) lines.push(
     `상대이름: ${one($("pnick").value)}`, `상대성별: ${val.pgender === "M" ? "남" : "여"}`,
     `상대생년월일: ${calName(val.pcal)} ${$("py").value}-${pad($("pm").value)}-${pad($("pd").value)}`,
-    `상대시간: ${$("phour").value}`);
+    `상대시간: ${val.pknowt === "yes" ? $("phour").value + " (" + $("phour").selectedOptions[0].text.split(" · ")[0] + ")" : "모름"}`);
   lines.push(`질문: ${one($("q").value) || "전체 흐름이 궁금해요"}`,
     `받는 곳: ${$("email").value.trim() || "카카오톡 오픈채팅"}`,
     `입금자명: ${one($("nick").value).slice(0, 5)}${id.slice(-4)}`);
