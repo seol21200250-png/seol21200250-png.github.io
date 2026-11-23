@@ -6,6 +6,16 @@
 <title>夜化 사주풀이 리포트 · 야화</title>
 <meta name="description" content="내 사주와 지금의 고민에 맞춘 夜化 기본 사주풀이 리포트. 9,900원, 이메일 PDF 발송.">
 <link rel="stylesheet" href="style.css">
+<style>
+.rv{margin:16px 0 4px;border:1px solid rgba(245,199,107,.45);border-radius:16px;padding:14px 18px;background:rgba(245,199,107,.07)}
+.rv-h{font-size:1rem;color:var(--gold);font-weight:800;margin-bottom:6px}
+.rv-q{font-size:1.2rem;color:var(--text);font-weight:700;line-height:1.5;min-height:3em;display:flex;align-items:center;transition:opacity .4s}
+.rv-c{font-size:.95rem;color:var(--sub);margin-top:4px}
+.rv details{margin-top:10px}.rv summary{cursor:pointer;color:var(--gold);font-weight:700;font-size:1rem}
+.rv ul{list-style:none;padding:0;margin:10px 0 0}.rv li{padding:10px 0;border-top:1px solid rgba(255,255,255,.1)}
+.rv li b{display:block;color:var(--text);font-size:1.1rem}.rv li span{font-size:.95rem;color:var(--sub)}
+.rv-q{font-size:1.1rem}
+</style>
 </head>
 <body>
 <main>
@@ -13,6 +23,12 @@
   <h1>夜化 사주풀이 리포트</h1>
   <p>내 사주 원국과 지금 고민에 맞춘 <strong>질문 맞춤형 사주풀이</strong>를 PDF로 보내드려요.</p>
 
+  <div class="rv" id="rv">
+    <div class="rv-h">💬 야화 손님들의 실제 후기</div>
+    <div class="rv-q" id="rvq"></div>
+    <div class="rv-c" id="rvc"></div>
+    <details><summary>후기 14개 모두 보기</summary><ul id="rvl"></ul></details>
+  </div>
   <div class="card">
     <h2 style="margin-top:0">① 종합운</h2>
     <div class="price">9,900원 <small>부가세 포함</small></div>
@@ -237,6 +253,31 @@ document.getElementById("notime").addEventListener("change", e => {
   ["hh", "mi"].forEach(id => { const el = document.getElementById(id); el.disabled = e.target.checked; if (e.target.checked) el.value = ""; });
 });
 onProd();
+</script>
+<script>
+const REVIEWS = [   // 손님이 실제로 한 말 그대로 (이름은 넣지 않음)
+  ["“엄청 초집중하면서 읽었습니다… 제가 10월에 입사한 게 우연이 아니었군요”", "📄 PDF 리포트를 받아보신 손님"],
+  ["“정말 용하신 것 같습니다”", "📄 PDF 리포트를 받아보신 손님"],
+  ["“2027년 결혼감이 오신다고 하셔서 안심이 되네요”", "📄 PDF 리포트를 받아보신 손님"],
+  ["“제가 누군지 알고 얘기하는 거 맞죠?”", "성향과 고민을 짚어드렸을 때"],
+  ["“소름이에요… 2004 딸이에요”", "2004년에 자식운이 들어온다고 말씀드렸을 때"],
+  ["“잘 읽어봤어요, 맞는 말씀이시네요”", "📄 PDF 리포트를 받아보신 손님"],
+  ["“속이 후련해진 거 같네요”", "결혼 고민 상담을 마치고"],
+  ["“어떻게 아셨는지.. 깜놀입니다”", "지나온 인생의 큰일이 있던 해를 짚었을 때"],
+  ["“말씀주신 대로 운이 좋고 잘 풀렸습니다~”", "몇 달 뒤 다시 연락 주신 손님 · 조심하라던 일도 무사히"],
+  ["“해주신 모든 말들 제 얘기예요ㅠ”", "요즘 마음고생을 짚어드렸을 때"],
+  ["“정확하시네요 ㅎㅎ”", "돈이냐 승진이냐, 갈림길에서의 선택을 맞췄을 때"],
+  ["“진짜 모이면 쓸 일 생기는 거 진짜… 적금이라도 하나 해야겠어요”", "돈이 새는 이유를 말씀드렸을 때"],
+  ["“너무 잘 맞추시는 것 같아 깜놀했습니다”", "상담을 마치며"],
+  ["“돈 주고 보는 것보다 훨씬 잘 보세요~”", "상담을 마치며"],
+];
+(function () {
+  const q = document.getElementById("rvq"), c = document.getElementById("rvc");
+  document.getElementById("rvl").innerHTML = REVIEWS.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("");
+  let i = 0;
+  function show() { q.style.opacity = 0; setTimeout(() => { q.textContent = REVIEWS[i][0]; c.textContent = REVIEWS[i][1]; q.style.opacity = 1; i = (i + 1) % REVIEWS.length; }, 300); }
+  show(); setInterval(show, 4500);
+})();
 </script>
 </body>
 </html>
