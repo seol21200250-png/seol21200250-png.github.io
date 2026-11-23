@@ -34,6 +34,13 @@ textarea.big-in{min-height:110px}
 .err{font-size:1.1rem;text-align:center}
 .step{display:none}.step.show{display:block}
 .pay{font-size:1.25rem;line-height:1.8}
+.rv{margin:16px 0 4px;border:1px solid rgba(245,199,107,.45);border-radius:16px;padding:14px 18px;background:rgba(245,199,107,.07)}
+.rv-h{font-size:1rem;color:var(--gold);font-weight:800;margin-bottom:6px}
+.rv-q{font-size:1.2rem;color:var(--text);font-weight:700;line-height:1.5;min-height:3em;display:flex;align-items:center;transition:opacity .4s}
+.rv-c{font-size:.95rem;color:var(--sub);margin-top:4px}
+.rv details{margin-top:10px}.rv summary{cursor:pointer;color:var(--gold);font-weight:700;font-size:1rem}
+.rv ul{list-style:none;padding:0;margin:10px 0 0}.rv li{padding:10px 0;border-top:1px solid rgba(255,255,255,.1)}
+.rv li b{display:block;color:var(--text);font-size:1.1rem}.rv li span{font-size:.95rem;color:var(--sub)}
 </style>
 </head>
 <body>
@@ -41,6 +48,12 @@ textarea.big-in{min-height:110px}
   <span class="tag">夜化 · 하루의 답은, 밤에 있다</span>
   <h1>夜化 간편 주문</h1>
   <p style="margin:4px 0 0">버튼만 누르면 돼요. 모르는 건 <strong>"모름"</strong>을 누르셔도 괜찮아요.</p>
+  <div class="rv" id="rv">
+    <div class="rv-h">💬 야화 손님들의 실제 후기</div>
+    <div class="rv-q" id="rvq"></div>
+    <div class="rv-c" id="rvc"></div>
+    <details><summary>후기 모두 보기</summary><ul id="rvl"></ul></details>
+  </div>
   <div class="bar"><i id="bar"></i></div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <div class="stepno" id="stepno"></div>
@@ -312,6 +325,25 @@ function copy(t) {
 $("copyAcc").onclick = () => { copy("3333383553064"); $("copyAcc").textContent = "복사됐어요 ✓"; };
 $("goKakao").addEventListener("click", () => copy(text));
 show(0, true);
+</script>
+<script>
+const REVIEWS = [   // 손님이 실제로 한 말 그대로 (이름은 넣지 않음)
+  ["“소름이에요… 2004 딸이에요”", "2004년에 자식운이 들어온다고 말씀드렸을 때"],
+  ["“어떻게 아셨는지.. 깜놀입니다”", "지나온 인생의 큰일이 있던 해를 짚었을 때"],
+  ["“말씀주신 대로 운이 좋고 잘 풀렸습니다~”", "몇 달 뒤 다시 연락 주신 손님 · 조심하라던 일도 무사히"],
+  ["“해주신 모든 말들 제 얘기예요ㅠ”", "요즘 마음고생을 짚어드렸을 때"],
+  ["“정확하시네요 ㅎㅎ”", "돈이냐 승진이냐, 갈림길에서의 선택을 맞췄을 때"],
+  ["“진짜 모이면 쓸 일 생기는 거 진짜… 적금이라도 하나 해야겠어요”", "돈이 새는 이유를 말씀드렸을 때"],
+  ["“너무 잘 맞추시는 것 같아 깜놀했습니다”", "상담을 마치며"],
+  ["“돈 주고 보는 것보다 훨씬 잘 보세요~”", "상담을 마치며"],
+];
+(function () {
+  const q = document.getElementById("rvq"), c = document.getElementById("rvc");
+  document.getElementById("rvl").innerHTML = REVIEWS.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("");
+  let i = 0;
+  function show() { q.style.opacity = 0; setTimeout(() => { q.textContent = REVIEWS[i][0]; c.textContent = REVIEWS[i][1]; q.style.opacity = 1; i = (i + 1) % REVIEWS.length; }, 300); }
+  show(); setInterval(show, 4500);
+})();
 </script>
 </body>
 </html>
